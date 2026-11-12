@@ -1,0 +1,32 @@
+
+
+body {
+    background-color: #f8f9fa;
+}
+
+header, footer {
+    background-color: #007bff;
+    border-radius: 10px;
+    padding: 10px;
+    margin: 5px;
+}
+
+.authForm{
+    padding: 17%;
+}
+
+.form-cont{
+    padding: 2% 0 20% 0;
+}
+
+header img{
+    border-radius:30px ;
+}
+.a-btn {
+    color: #fff;
+    font-weight: 600;
+    text-decoration: none;
+    padding: 10px;
+    border-radius: 15px;
+    background-color: #0d47a1;
+}
