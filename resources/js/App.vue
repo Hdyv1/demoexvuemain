@@ -16,6 +16,7 @@
             v-if="page == 'AdminPage'"
             PUBLIC="PUBLIC"
             :server="server"
+            :created_at="created_at"
         />
         <OrderPage
             v-if="page == 'OrderPage'"
@@ -27,6 +28,7 @@
             v-if="page == 'OrdersPage'"
             PUBLIC="PUBLIC"
             :server="server"
+            :created_at="created_at"
         />
     </template>
     <template v-else>
@@ -61,6 +63,14 @@ export default {
         };
     },
     methods: {
+        created_at(data){
+            let day = data.split('T')[0].split('-')[2];
+            let month = data.split('T')[0].split('-')[1];
+            let year = data.split('T')[0].split('-')[0];
+            let time = data.split('.')[0].split('T')[1];
+            this.data = day+'.'+month+'.'+year+' '+time;
+            return this.data;
+        },
         changePage(page, pageId = null) {
             this.page = page;
             this.pageId = pageId;

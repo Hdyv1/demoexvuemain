@@ -8,7 +8,7 @@
                 v-if="orders[0]"
             >
                 <div class="order">
-                    <h5>Место - {{ order.place.title }} ({{ order.date }})</h5>
+                    <h5>Место - {{ order.place.title }} ({{ created_at(order.date) }})</h5>
                     <p>
                         Способ Оплаты:
                         {{ order.payMethod == "cash" ? "Наличные" : "СБП" }}
@@ -32,38 +32,42 @@
                         placeholder="Здесь вы можете оставить отзыв"
                         class="form-control mb-3"
                         name="content"
-                        v-model="this.comment.content"
+                        :id="'content' + order.id"
+                        v-model="content[order.id]"
                     ></textarea>
                     <button
                         type="submit"
                         class="btn btn-primary"
-                        @click="commentCreate(order.id, this.comment.content)"
+                        @click="commentCreate(order.id)"
                     >
                         Отправить
                     </button>
-                    <div class="alert alert-danger" v-if="errors.content">
-                        {{ errors.content.join(". ") }}
+                    <div
+                        class="alert alert-danger"
+                        v-if="errors[order.id]?.content"
+                    >
+                        {{ errors[order.id].content.join(". ") }}
                     </div>
                     <div class="container">
                         <div class="row">
                             <div class="col-12">
                                 <h4>Отзывы</h4>
-                                
-                                <div class="form-control col-12 mb-3" v-for="comment in order.comments">
+
+                                <div
+                                    class="form-control col-12 mb-3"
+                                    v-for="comment in order.comments"
+                                >
                                     <div
                                         class="comment-header d-flex align-items-center justify-content-between"
                                     >
-                                        <h6>{{comment.user.fullname}}</h6>
+                                        <h6>{{ comment.user?.fullname }}</h6>
                                         <span class="fw-light"
-                                            >date('d.m.Y
-                                            H:i:s',strtotime($comment->created_at))</span
+                                            >{{created_at(comment.created_at)}}</span
                                         >
                                     </div>
 
                                     {{ comment.content }}
                                 </div>
-
-                                
                             </div>
                         </div>
                     </div>
@@ -80,22 +84,24 @@ export default {
         return {
             orders: {},
             comments: {},
-            content: null,
+            content: {},
             errors: {},
         };
     },
     methods: {
-        commentCreate(id, content) {
+        commentCreate(id) {
             let formdata = new FormData();
-            if (content) formdata.append("content", content);
+            if (this.content[id]) {
+                formdata.append("content", this.content[id]);
+            }
             this.server("commentCreate/" + id, "POST", formdata).then(
                 (result) => {
                     if (result.errors) {
-                        this.errors = result.errors;
+                        this.errors[id] = result.errors;
                     }
                     if (result) {
                         console.log(result);
-                        content = null;
+                        this.content[id] = '';
                         this.getOrders();
                         // this.changePage('OrdersPage')
                     }
@@ -111,7 +117,7 @@ export default {
             });
         },
     },
-    props: ["PUBLIC", "changePage", "server"],
+    props: ["PUBLIC", "changePage", "server", 'created_at'],
     mounted() {
         this.getOrders();
     },

@@ -131,11 +131,14 @@
             <div class="col-12">
                 <h3 class="mb-lg-5 mb-sm-3">Все заявки</h3>
 
-                <div class="order-form mb-3 form-control p-3" v-for="order in orders">
+                <div
+                    class="order-form mb-3 form-control p-3"
+                    v-for="order in orders"
+                >
                     <div class="order-user">
                         <span>
                             {{ order.user.fullname }} (
-                            {{ order.created_at }} )</span
+                            {{ created_at(order.created_at) }} )</span
                         >
                     </div>
                     <div class="d-flex flex-column">
@@ -147,36 +150,44 @@
                         </div>
                         <div>
                             Название мероприятия:
-                            <span class="badge bg-primary"> {{order.name}} </span>
+                            <span class="badge bg-primary">
+                                {{ order.name }}
+                            </span>
                         </div>
                     </div>
 
                     <div class="order-status d-flex justify-content-between">
                         <div class="mb-3">
                             <span>Статус заявки: </span>
-                            <select class="form-select" name="status" v-model="order.status">
+                            <select
+                                class="form-select"
+                                name="status"
+                                v-model="order.status"
+                            >
                                 <option value="new">Новое</option>
                                 <option value="created">Создано</option>
                                 <option value="done">Выполнено</option>
                             </select>
                         </div>
-                        <button type="submit" class="btn btn-primary" @click="orderStatusUpdate(order.id, order.status)">
+                        <button
+                            type="submit"
+                            class="btn btn-primary"
+                            @click="orderStatusUpdate(order.id, order.status)"
+                        >
                             Обновить
                         </button>
                     </div>
-                    @if($order->comments!='[]')
-                    <div class="comments">
+
+                    <div class="comments" v-if="order.comments[0]">
                         <h4>Комментарии</h4>
                         <div class="form-control fw-light">
-                            @foreach ($order->comments as $comment)
-                            <p>
-                                $comment->user->fullname.': '. $comment->content
-                                ()
+                            <p v-for="comment in order.comments">
+                                {{ comment.user.fullname }}:
+                                {{ comment.content }}
+                                ({{ created_at(comment.created_at) }})
                             </p>
-                            @endforeach
                         </div>
                     </div>
-                    @endif
                 </div>
             </div>
         </div>
@@ -204,7 +215,7 @@ export default {
         };
     },
     components: {},
-    props: ["server", "PUBLIC"],
+    props: ["server", "PUBLIC", 'created_at'],
     methods: {
         placeCreate() {
             let formdata = new FormData();
@@ -235,13 +246,12 @@ export default {
             if (image.files[0]) {
                 formdata.append("image", image.files[0]);
             }
-            this.server("placeEdit/" + $id, 'POST', formdata).then((result) => {
+            this.server("placeEdit/" + $id, "POST", formdata).then((result) => {
                 if (result.errors) {
                     this.errors = result.errors;
-                }
-                else if (result) {
-                    if(this.errors){
-                        this.errors={};
+                } else if (result) {
+                    if (this.errors) {
+                        this.errors = {};
                     }
                     this.edit = false;
                     this.title = null;
@@ -250,14 +260,16 @@ export default {
                 }
             });
         },
-        orderStatusUpdate(id, status){
+        orderStatusUpdate(id, status) {
             let formdata = new FormData();
             if (status) formdata.append("status", status);
-            this.server('orderStatusUpdate/'+id, "POST", formdata).then((result)=>{
-                if(result){
-                    this.getOrders();
-                }
-            })
+            this.server("orderStatusUpdate/" + id, "POST", formdata).then(
+                (result) => {
+                    if (result) {
+                        this.getOrders();
+                    }
+                },
+            );
         },
         placeEditForm($id) {
             this.edit = true;
@@ -270,12 +282,12 @@ export default {
                 }
             });
         },
-        getOrders(){
-          this.server('orders').then((result)=>{
-            if(result){
-                this.orders = result;
-            }
-          })  
+        getOrders() {
+            this.server("orders").then((result) => {
+                if (result) {
+                    this.orders = result;
+                }
+            });
         },
         getEditPlace($id) {
             this.server("place/" + $id).then((result) => {

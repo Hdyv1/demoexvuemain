@@ -14,10 +14,10 @@ class OrderController extends Controller
      */
     public function index()
     {
-        return response()->json(Order::orderBy('created_at', 'desc')->with(['user','place'])->get());
+        return response()->json(Order::orderBy('created_at', 'desc')->with(['user','place', 'comments.user'])->get());
     }
     public function userOrders(){
-        return response()->json(Order::where('user_id', auth::id())->orderBy('created_at', 'desc')->with(['user','place'])->get());
+        return response()->json(Order::where('user_id', auth::id())->orderBy('created_at', 'desc')->with(['user','place', 'comments.user'])->get());
     }
     /**
      * Show the form for creating a new resource.
