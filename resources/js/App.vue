@@ -1,7 +1,8 @@
 <template>
     <template v-if="isUser">
         <HeaderComponent :PUBLIC="PUBLIC" :changePage="changePage" :user="user" :logout="logout"/>
-        <HomePage v-if="page=='HomePage'" PUBLIC="PUBLIC" :changePage="changePage"/>
+        <HomePage v-if="page=='HomePage'" PUBLIC="PUBLIC" :changePage="changePage" :server="server"/>
+        <AdminPage v-if="page=='AdminPage'" PUBLIC="PUBLIC" :server="server"/>
     </template>
     <template v-else>
         <AuthPage :changePage="changePage" :server="server" :getUser="getUser" :successUser="successUser"/>
@@ -10,6 +11,7 @@
 
 <script>
 import HeaderComponent from './components/HeaderComponent.vue';
+import AdminPage from './pages/AdminPage.vue';
 import AuthPage from './pages/AuthPage.vue';
 import HomePage from './pages/HomePage.vue';
 
@@ -98,6 +100,7 @@ export default {
         HeaderComponent,
         HomePage,
         AuthPage,
+        AdminPage,
     },
     mounted() {
         if (localStorage.getItem('token')) {

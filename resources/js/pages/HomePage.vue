@@ -10,14 +10,14 @@
                         <div class="row">
                             <div
                                 class="col-lg-6 col-sm-12 d-flex flex-column align-items-center"
-                                v-if="places=={}"
                                 v-for="place in places"
+                                v-if="places[0]"
                             >
                                 <div
                                     class="d-flex flex-column align-items-center align-items-lg-start"
                                 >
                                     <img
-                                        :src="PUBLIC + place.image"
+                                        :src="place.image"
                                         width="350px"
                                         alt=""
                                     />
@@ -52,7 +52,19 @@ export default {
             places: {},
         };
     },
-    props: ["PUBLIC", "changePage"],
-    mounted() {},
+    methods: {
+        getPlaces() {
+            this.server("Places").then((result) => {
+                if (result) {
+                    this.places = result;
+                    console.log(result);
+                }
+            });
+        },
+    },
+    props: ["PUBLIC", "changePage", "server"],
+    mounted() {
+        this.getPlaces();
+    },
 };
 </script>

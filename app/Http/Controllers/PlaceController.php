@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Place;
 use App\Http\Requests\StorePlaceRequest;
 use App\Http\Requests\UpdatePlaceRequest;
+use Illuminate\Support\Facades\Storage;
 
 class PlaceController extends Controller
 {
@@ -13,7 +14,7 @@ class PlaceController extends Controller
      */
     public function index()
     {
-        //
+        return response()->json(Place::orderBy('created_at', 'desc')->get());
     }
 
     /**
@@ -29,7 +30,12 @@ class PlaceController extends Controller
      */
     public function store(StorePlaceRequest $request)
     {
-        //
+        $place = new Place();
+        $place -> title = $request -> title;
+        $place -> description = $request -> description;
+        $place->image = 'storage/images/' . Storage::disk('images')->put('/', $request->file('image'));
+        $place->save();
+        return response()->json($place);
     }
 
     /**
@@ -37,7 +43,7 @@ class PlaceController extends Controller
      */
     public function show(Place $place)
     {
-        //
+        return response()->json($place);
     }
 
     /**
@@ -53,7 +59,13 @@ class PlaceController extends Controller
      */
     public function update(UpdatePlaceRequest $request, Place $place)
     {
-        //
+        $place->title = $request->title;
+        $place->description = $request->description;
+        if ($request->image) {
+            $place->image = 'storage/images/' . storage::disk('images')->put('/', $request->file('image'));
+        }
+        $place->save();
+        return response()->json($place);
     }
 
     /**
@@ -61,6 +73,6 @@ class PlaceController extends Controller
      */
     public function destroy(Place $place)
     {
-        //
+        return response()->json($place->delete());
     }
 }

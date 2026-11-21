@@ -23,7 +23,7 @@
                     >
                 </div>
                 <div class="col-lg-3 col-sm-3 mb-4 mb-lg-0" v-if="this.user.role=='admin'">
-                    <a class="a-btn" href="{{ route('admin') }}"
+                    <a class="a-btn" href="" @click.prevent="changePage('AdminPage')"
                         >Панель администратора</a
                     >
                 </div>
