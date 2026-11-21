@@ -130,37 +130,37 @@
             </div>
             <div class="col-12">
                 <h3 class="mb-lg-5 mb-sm-3">Все заявки</h3>
-                @foreach ($orders as $order)
-                <div class="order-form mb-3 form-control p-3">
+
+                <div class="order-form mb-3 form-control p-3" v-for="order in orders">
                     <div class="order-user">
                         <span>
-                            $order->user->fullname (
-                            date('d.m.Y',strtotime($order->date)) )</span
+                            {{ order.user.fullname }} (
+                            {{ order.created_at }} )</span
                         >
                     </div>
                     <div class="d-flex flex-column">
                         <div>
                             место:
                             <span class="badge bg-secondary">
-                                $order->place->title
+                                {{ order.place.title }}
                             </span>
                         </div>
                         <div>
                             Название мероприятия:
-                            <span class="badge bg-primary"> $order->name </span>
+                            <span class="badge bg-primary"> {{order.name}} </span>
                         </div>
                     </div>
 
                     <div class="order-status d-flex justify-content-between">
                         <div class="mb-3">
                             <span>Статус заявки: </span>
-                            <select class="form-select" name="status">
+                            <select class="form-select" name="status" v-model="order.status">
                                 <option value="new">Новое</option>
                                 <option value="created">Создано</option>
                                 <option value="done">Выполнено</option>
                             </select>
                         </div>
-                        <button type="submit" class="btn btn-primary">
+                        <button type="submit" class="btn btn-primary" @click="orderStatusUpdate(order.id, order.status)">
                             Обновить
                         </button>
                     </div>
@@ -178,15 +178,12 @@
                     </div>
                     @endif
                 </div>
-                @endforeach
             </div>
         </div>
         <div class="row">
             <div class="col-12"></div>
         </div>
     </div>
-
-    23231132
 </template>
 <script>
 export default {
@@ -202,6 +199,8 @@ export default {
             comments: {},
             errors: {},
             edit: false,
+            orders: {},
+            status: null,
         };
     },
     components: {},
@@ -251,6 +250,15 @@ export default {
                 }
             });
         },
+        orderStatusUpdate(id, status){
+            let formdata = new FormData();
+            if (status) formdata.append("status", status);
+            this.server('orderStatusUpdate/'+id, "POST", formdata).then((result)=>{
+                if(result){
+                    this.getOrders();
+                }
+            })
+        },
         placeEditForm($id) {
             this.edit = true;
             this.getEditPlace($id);
@@ -261,6 +269,13 @@ export default {
                     this.places = result;
                 }
             });
+        },
+        getOrders(){
+          this.server('orders').then((result)=>{
+            if(result){
+                this.orders = result;
+            }
+          })  
         },
         getEditPlace($id) {
             this.server("place/" + $id).then((result) => {
@@ -280,6 +295,7 @@ export default {
     },
     mounted() {
         this.getPlaces();
+        this.getOrders();
     },
 };
 </script>

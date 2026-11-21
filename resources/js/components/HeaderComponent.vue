@@ -18,7 +18,7 @@
                     >
                 </div>
                 <div class="col-lg-3 col-sm-3 mb-4 mb-lg-0">
-                    <a class="a-btn" @click.prevent="changePage(OrderPage)" href=""
+                    <a class="a-btn" @click.prevent="changePage('OrderPage')" href=""
                         >Формирование заявки</a
                     >
                 </div>
