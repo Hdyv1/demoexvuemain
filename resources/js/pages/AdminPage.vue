@@ -215,9 +215,10 @@ export default {
         };
     },
     components: {},
-    props: ["server", "PUBLIC", 'created_at'],
+    props: ["server", "PUBLIC", "created_at"],
     methods: {
         placeCreate() {
+            
             let formdata = new FormData();
             if (this.title) formdata.append("title", this.title);
             if (this.description)
@@ -232,12 +233,16 @@ export default {
                     this.errors = result.errors;
                 }
                 if (result) {
-                    console.log(result);
+                    // console.log(result);
+                    this.title = null;
+                    this.description = null;
+                    this.image = null;
                     this.getPlaces();
                 }
             });
         },
-        placeEdit($id) {
+        placeEdit(id) {
+            
             let formdata = new FormData();
             if (this.title) formdata.append("title", this.title);
             if (this.description)
@@ -246,7 +251,7 @@ export default {
             if (image.files[0]) {
                 formdata.append("image", image.files[0]);
             }
-            this.server("placeEdit/" + $id, "POST", formdata).then((result) => {
+            this.server("placeEdit/" + id, "POST", formdata).then((result) => {
                 if (result.errors) {
                     this.errors = result.errors;
                 } else if (result) {
@@ -271,9 +276,9 @@ export default {
                 },
             );
         },
-        placeEditForm($id) {
+        placeEditForm(id) {
             this.edit = true;
-            this.getEditPlace($id);
+            this.getEditPlace(id);
         },
         getPlaces() {
             this.server("Places").then((result) => {
@@ -289,16 +294,15 @@ export default {
                 }
             });
         },
-        getEditPlace($id) {
-            this.server("place/" + $id).then((result) => {
+        getEditPlace(id) {
+            this.server("place/" + id).then((result) => {
                 this.place = result;
                 this.description = result.description;
                 this.title = result.title;
-                console.log(result);
             });
         },
-        placeDelete($id) {
-            this.server("placeDelete/" + $id, "POST").then((result) => {
+        placeDelete(id) {
+            this.server("placeDelete/" + id, "POST").then((result) => {
                 if (result) {
                     this.getPlaces();
                 }

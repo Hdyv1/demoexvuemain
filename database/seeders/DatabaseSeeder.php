@@ -19,11 +19,11 @@ class DatabaseSeeder extends Seeder
 
         User::create([
             'fullname' => 'admin',
-            'username' => 'admin',
+            'username' => 'Conf2027',
             'role' => 'admin',
             'phonenumber' => '79123456789',
             'email' => 'admin@admin',
-            'password' => 'admin',
+            'password' => 'Demo77',
         ]);
     }
 }

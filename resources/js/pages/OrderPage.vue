@@ -119,7 +119,7 @@ export default {
                 if (result.errors) {
                     this.errors = result.errors;
                 }
-                if (result) {
+                else if (result) {
                     // console.log(result);
                     this.changePage('OrdersPage');
                 }

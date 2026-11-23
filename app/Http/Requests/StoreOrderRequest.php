@@ -24,7 +24,7 @@ class StoreOrderRequest extends FormRequest
     {
         return [
             'place' => 'required',
-            'date' => 'required',
+            'date' => 'required|date|after:now',
             'name' => 'required',
             'payMethod' => 'required',
         ];

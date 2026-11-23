@@ -64,6 +64,7 @@ export default {
     },
     methods: {
         created_at(data){
+
             let day = data.split('T')[0].split('-')[2];
             let month = data.split('T')[0].split('-')[1];
             let year = data.split('T')[0].split('-')[0];
